@@ -45,5 +45,16 @@ vgdisplay datavg
 pvmove /dev/vdbc
 vgreduce datavg /dev/vdbc
 
+#ssh key
+ssh-keygen
+ssh-copy-id -i ~/.ssh/id_rsa.pub root@serverX.example.com
 
+softlink:
+ln -s /root/newfile-link2.txt /tmp/newfile-symlink.txt
+ls -l newfile-link2.txt /tmp/newfile-symlink.txt
+lrwxrwxrwx. 1 root root 11 Mar 11 20:59 /tmp/newfile-symlink.txt -> /root/newfile-link2.txt
+-rw-rw-r--. 1 root root 12 Mar 11 19:19 newfile-link2.txt
+#A soft link pointing to a missing file is called a "dangling soft link."
 
+hardlink: delete newfile, newfile2 still exist
+ln newfile.txt /tmp/newfile2.txt
