@@ -1,0 +1,62 @@
+# Add the app node
+https://docs.openshift.com/container-platform/3.11/install_config/adding_hosts_to_existing_cluster.html
+
+
+troubleshooting:
+##1. Check the healthiness of the node
+```
+oc get nodes
+
+for i in `oc get nodes -o jsonpath=$'{range .items[*]}{.metadata.name}\n{end}'`; do oc get --raw /api/v1/nodes/$i/proxy/healthz; echo -e "\t$i"; done
+Error from server (ServiceUnavailable): the server is currently unable to handle the request
+        <app-node>
+
+oc get --loglevel=9 --raw /api/v1/nodes/<app-node>/proxy/healthz
+```
+##2. Check the certificate on app node
+check the node /etc/orgin/node/certificates/ has following files
+kubelet-server-*
+kubelet-client-*
+
+otherwise remove the directory /etc/orgin/node/certificates
+```
+rm -rf /etc/orgin/node/certificates
+```
+
+add the below ansible variable in the inventory under [OSEv3:vars] section.
+~~~
+openshift_master_bootstrap_auto_approve=true
+~~~ 
+
+Run the scaleup playbook again by capturing verbose ansible playbook logs.
+# ansible-playbook -i <inventory> <path-to-playbook-directory>/playbooks/openshift-node/scaleup.yml -vvv | tee scaleup.logs
+
+##3. the CSR problem
+```
+oc get csr -w
+NAME                                                   AGE       REQUESTOR                                                 CONDITION
+node-csr-VNPGbEFh1gj3dGnSo   4h        system:serviceaccount:openshift-infra:node-bootstrapper   Pending
+oc adm certificate approve <certificate-name>
+```
+
+##4. For the Error from atomic-openshift-node service.
+Mar 11 22:38:09 rhcapplu11 atomic-openshift-node[18524]: W0311 22:38:09.884602   18524 cni.go:172] Unable to update cni config: No networks found in /etc/cni/net.d
+For this issue, please check if there is 80-openshift-network.conf file present under the directory /etc/cni/net.d/ on the node.
+
+If not, then try to create the file with following content with proper indentation.
+~~~
+{
+  "cniVersion": "0.2.0",
+  "name": "openshift-sdn",
+  "type": "openshift-sdn"
+}
+~~~
+After creating the file, restart the docker and atomic-openshift-node service sequentially on the node.
+# systemctl restart docker
+# systemctl restart atomic-openshift-node
+
+##5. Error to logs/rsh the pod
+oc log service/ada-core
+log is DEPRECATED and will be removed in a future version. Use logs instead.
+Found 2 pods, using pod/ada-core-16-rlnj2
+Error from server: Get https://appnode:10250/containerLogs/ada/ada-core-16-rlnj2/ada-core: remote error: tls: internal error
