@@ -1,0 +1,8 @@
+#grant the cluster admin role to admin
+oc login -u system:admin
+oc adm policy add-cluster-role-to-user cluster-admin admin
+
+#to pull redhat image
+cd /etc/rhsm/ca/
+touch redhat-uep.pem
+
