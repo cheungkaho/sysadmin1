@@ -1,0 +1,5 @@
+check the Cert:
+
+#1 CA Cert
+Windows: <install_path>\netbackup\bin\nbcertcmd -listCACertDetails
+UNIX: <install_path>/netbackup/bin/nbcertcmd -listCACertDetails
