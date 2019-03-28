@@ -3,3 +3,29 @@ check the Cert:
 #1 CA Cert
 Windows: <install_path>\netbackup\bin\nbcertcmd -listCACertDetails
 UNIX: <install_path>/netbackup/bin/nbcertcmd -listCACertDetails
+
+#Check the CA Cert is Trusted
+/usr/openv/netbackup/bin/nbcertcmd -displayCACertDetail -server mymaster
+
+#if not
+UNIX: <install_path>/netbackup/bin/nbcertcmd -getCACertificate -server mymaster
+
+#2 Client Cert
+#check the hsot id certificate is present
+Windows: <install_path>\netbackup\bin\nbcertcmd -hostselfcheck -server mymaster
+Unix:  <install_path>/netbackup/bin/nbcertcmd -hostselfcheck -server mymaster
+
+Resulting output(corrent):
+Certificate is not revoked.
+
+Resulting output(wrong):
+Unable to read CRL for server = mymaster, error = 12.
+Unable to read certificate.
+EXIT STATUS 5949: Certificate does not exist.
+
+
+#if not or need to reissue token
+the token get from the NBU Master GUI.
+ <install_path>\netbackup\bin\nbcertcmd -getCertificate -host myhost -server mymaster -token myenvtoken
+
+https://www.veritas.com/support/en_US/article.100039650.html
