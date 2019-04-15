@@ -1,3 +1,8 @@
+#check the cloning process
+ ps -ef |grep -i qemu-img
+ cat /proc/33259/fd/1
+
+#shutdown the VM
 root@foundationX ~]# virsh list
  Id Name                 State
 ----------------------------------
