@@ -1,0 +1,24 @@
+[root@rhvmgtl ~]# ovirt-aaa-jdbc-tool user show admin
+-- User admin(xxxxxxxxxxxxxxxxx) --
+Namespace: *
+Name: admin
+ID: xxxxxx
+Display Name:
+Email:
+First Name: admin
+Last Name:
+Department:
+Title:
+Description:
+Account Disabled: false
+Account Locked: true
+Account Unlocked At: 2019-06-04 05:03:39Z
+Account Valid From: 2018-06-12 01:34:11Z
+Account Valid To: 2218-06-12 01:34:11Z
+Account Without Password: false
+Last successful Login At: 2019-06-04 03:54:17Z
+Last unsuccessful Login At: 2019-06-04 04:03:39Z
+Password Valid To: 2218-04-25 01:34:13Z
+[root@rhvmgt ~]# ovirt-aaa-jdbc-tool user unlock admin
+updating user admin...
+user updated successfully
