@@ -1,0 +1,5 @@
+1) To find details of all VM you can run following database query from RHV manager:-
+# /usr/share/ovirt-engine/dbscripts/engine-psql.sh -c "SELECT vm_name,mem_size_mb,num_of_cpus,disk_alias,size,actual_size from vms JOIN vm_images_view ON vms.vm_name=vm_images_view.vm_names"
+
+2) For particular VM use following query:-
+# /usr/share/ovirt-engine/dbscripts/engine-psql.sh -c "SELECT vm_name,mem_size_mb,num_of_cpus,disk_alias,size,actual_size from vms JOIN vm_images_view ON vms.vm_name=vm_images_view.vm_names where vm_name='<vm_name>'"
