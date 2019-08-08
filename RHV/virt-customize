@@ -1,0 +1,15 @@
+Change the root password of the qcow2 image.
+Run on the Hypervisor
+
+#rhel-7
+export LIBGUESTFS_BACKEND=direct
+virt-customize -a rhel-server-7.6-update-4-x86_64-kvm.qcow2 --root-password password:password
+
+#rhel-8
+tar xvfJ appliance-1.40.1.tar.xz -C $HOME/
+export LIBGUESTFS_PATH=$HOME/appliance/
+export LIBGUESTFS_BACKEND=direct
+virt-customize -a rhel-8.0-update-1-x86_64-kvm.qcow2 --root-password password:password
+
+convert from qcow2 to raw
+qemu-img convert -f qcow2 -O raw rhel-8.0-update-1-x86_64-kvm.qcow2 rhel-8.0-update-1-x86_64-kvm.raw
