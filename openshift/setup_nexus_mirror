@@ -1,0 +1,31 @@
+https://docs.openshift.com/container-platform/3.11/dev_guide/dev_tutorials/maven_tutorial.html
+
+oc new-project nexus-mirror
+oc new-app sonatype/nexus
+oc expose service --path=/nexus
+
+$ oc set probe dc/nexus \
+	--liveness \
+	--failure-threshold 3 \
+	--initial-delay-seconds 30 \
+	-- echo ok
+$ oc set probe dc/nexus \
+	--readiness \
+	--failure-threshold 3 \
+	--initial-delay-seconds 30 \
+	--get-url=http://:8081/nexus/content/groups/public
+
+#presistence to nexus
+create pvc
+oc set volume dc/nexus --add \
+	--name 'nexus-volume-1' \
+	--type 'pvc' \
+	--mount-path '/sonatype-work/' \
+	--claim-name 'nexus-pv' \
+	--claim-size '1G' \
+	--overwrite
+
+nexus login:
+admin/admin123.
+
+oc new-build openshift/wildfly-100-centos7:latest~https://github.com/openshift/jee-ex.git -e MAVEN_MIRROR_URL='http://nexus.nexus-mirror.svc.cluster.local:8081/nexus/content/groups/public'
