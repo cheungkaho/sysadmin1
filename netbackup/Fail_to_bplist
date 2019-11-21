@@ -40,6 +40,11 @@ Host certificate and certificate revocation list received successfully from serv
 Certificate is not revoked.
 
 4. delete the webservice cache
+ /usr/openv/netbackup/bin/bpclntcmd -pn -verbose
+Unable to perform peer host name validation.: 7643
+        [PROXY] Encountered error (VALIDATE_PEER_HOST_PROTOCOL_RUNNING) while processing(ValidatePeerHostProtocol).: 1
+Can't connect to host master: cannot connect on socket (25)
+
 To prevent the connection failures or delays, perform the following steps on the client host:
 
 1) Delete the web service tunnel cache file.
@@ -48,3 +53,6 @@ Windows: <InstallPath>\NetBackup\websvctunnels.cache
 
 2) Clear the host cache.
 bpclntcmd -clear_host_cache
+Follow below to clear the web service tunnel cache
+https://www.veritas.com/support/en_US/article.100042181
+
