@@ -1,0 +1,50 @@
+list the backup record:
+/usr/openv/netbackup/bin/bplist -C client_hostname -t 4 -l  -R -s 10/01/2019 00:00:00 -e 10/03/2019 /
+EXIT STATUS 25: cannot connect on socket
+
+1. check the bp.conf
+
+2. Check the connection between Client and Master
+
+3. Check the Cert problem
+[root@client netbackup]# /usr/openv/netbackup/bin/nbcertcmd -displayCACertDetail -server master-bck
+
+CA Certificate received successfully from server master-bck.
+
+         Subject Name : /CN=nbatd/OU=root@master/O=vx
+           Start Date : Feb 25 07:38:10 2016 GMT
+          Expiry Date : Feb 20 08:53:10 2036 GMT
+     SHA1 Fingerprint : 48:B3:04:F1:BA:F1:12:D9:E4:72:6F:DD:CD:A2:AB:9C:7B:2B:12:40
+CA Certificate State : Not Trusted
+
+[root@client netbackup]# /usr/openv/netbackup/bin/nbcertcmd -getCACertificate -server master-bck
+Authenticity of root certificate cannot be established.
+The SHA1 fingerprint of root certificate is XX:XX:XX:XX:XX:XX.
+Are you sure you want to continue using this certificate ? (y/n): y
+The validation of root certificate fingerprint is successful.
+CA certificate stored successfully from server master-bck.
+
+Check the client cert
+It seems the client doesn’t have the cert.
+Deploy the Cert with new token.
+
+[root@client netbackup]# /usr/openv/netbackup/bin/nbcertcmd -hostselfcheck  -server master-bck
+Unable to read CRL for server = master-bck, error = 5949.
+Unable to read certificate.
+EXIT STATUS 5949: Certificate does not exist.
+
+[root@client netbackup]# /usr/openv/netbackup/bin/nbcertcmd -getCertificate -host client-bck -server master-bck -token XXXXXXXXXXXX
+Host certificate and certificate revocation list received successfully from server master-bck.
+
+[root@client netbackup]# /usr/openv/netbackup/bin/nbcertcmd -hostselfcheck -server master-bck
+Certificate is not revoked.
+
+4. delete the webservice cache
+To prevent the connection failures or delays, perform the following steps on the client host:
+
+1) Delete the web service tunnel cache file.
+Unix: /usr/openv/netbackup/websvctunnels.cache
+Windows: <InstallPath>\NetBackup\websvctunnels.cache
+
+2) Clear the host cache.
+bpclntcmd -clear_host_cache
