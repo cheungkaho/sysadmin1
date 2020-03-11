@@ -6,6 +6,7 @@ export LIBGUESTFS_BACKEND=direct
 virt-customize -a rhel-server-7.6-update-4-x86_64-kvm.qcow2 --root-password password:password
 
 #rhel-8
+curl -O http://download.libguestfs.org/binaries/appliance/appliance-1.40.1.tar.xz
 tar xvfJ appliance-1.40.1.tar.xz -C $HOME/
 export LIBGUESTFS_PATH=$HOME/appliance/
 export LIBGUESTFS_BACKEND=direct
