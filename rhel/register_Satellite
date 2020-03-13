@@ -1,0 +1,82 @@
+# Error Message:
+Satellite Certificate has expired
+Error Class Code: 3006
+
+The error indicates that the client system is already registered to RHN. Please delete the file /etc/sysconfig/rhn/systemid and then try registering the system to the Satellite.
+
+If /etc/sysconfig/rhn/systemid is not present on affected client machine, set enabled=0 in /etc/yum/pluginconf.d/rhnplugin.conf file.
+
+Also ensure enabled=1 is set in /etc/yum/pluginconf.d/subscription-manager.conf on client machine.
+
+#for the same system identity
+rm -f /etc/machine-id
+systemd-machine-id-setup
+rm -f /etc/rhsm/facts/katello.facts
+#for setup
+chattr -i /etc/services
+
+subscription-manager
+rpm -qa katello-ca-consumer*
+
+rpm -Uvh http://satellite/pub/katello-ca-consumer-latest.noarch.rpm
+
+subscription-manager register --activationkey="PROD" --org="Default"
+subscription-manager attach --auto
+
+subscription-manager refresh
+subscription-manager identity
+subscription-manager release --show
+subscription-manager release --list
+cat /etc/redhat-release
+
+
+yum clean all
+rm -rf /var/cache/yum
+rm -rf /etc/yum.repos.d.bak
+mv -f /etc/yum.repos.d /etc/yum.repos.d.bak
+mkdir /etc/yum.repos.d
+yum repolist all
+
+vmware:
+yum -y install katello-agent open-vm-tools insights-client
+systemctl start vmtoolsd.service
+systemctl enable vmtoolsd.service 
+insights-client --register
+
+rhv:
+subscription-manager repos --enable=rhel-\*-satellite-tools-\*-rpms
+yum -y install katello-agent ovirt-guest-agent-common insights-client
+systemctl start ovirt-guest-agent.service
+systemctl enable ovirt-guest-agent.service
+insights-client --register
+
+#For satellite
+yum -y install katello-agent
+
+#Insights
+yum -y install insights-client
+insights-client --register
+
+#RHV
+yum -y install ovirt-guest-agent-common
+systemctl start ovirt-guest-agent.service
+systemctl enable ovirt-guest-agent.service
+
+#VMware
+yum install -y open-vm-tools
+systemctl start vmtoolsd.service
+systemctl enable vmtoolsd.service 
+
+subscription-manager remove --all
+
+subscription-manager unregister
+
+subscription-manager clean
+subscription-manager list --available --all
+subscription-manager list –consumed
+
+subscription-manager repos –list
+
+subscription-manager repos --disable=rhel-\*-satellite-tools-\*-rpms
+subscription-manager repos --enable=rhel-\*-satellite-tools-\*-rpms
+
