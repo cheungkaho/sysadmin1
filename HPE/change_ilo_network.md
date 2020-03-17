@@ -1,0 +1,80 @@
+# 1. Downnload the Package
+https://support.hpe.com/hpsc/swd/public/detail?swItemId=MTX_5ab6295f49964f16a699064f29
+https://support.hpe.com/hpsc/swd/public/detail?swItemId=MTX_417dfa95f78547169ad939e26c
+
+# 2. install the Package
+`rpm -ivh hponcfg-*.rpm`
+
+# 3. get ilo information
+`hponcfg -a -w ilo_info.xml`
+
+# 4. Create change_ilo_network.xml
+```
+<RIBCL VERSION="2.1">
+  <LOGIN USER_LOGIN="administrator" PASSWORD="password">
+<RIB_INFO MODE="WRITE">
+<MOD_NETWORK_SETTINGS>
+    <ENABLE_NIC VALUE="Y"/>
+    <SHARED_NETWORK_PORT VALUE="N"/>
+    <VLAN_ENABLED VALUE="N"/>
+
+    <SPEED_AUTOSELECT VALUE="Y"/>
+
+
+    <DHCP_ENABLE VALUE="N"/>
+    <DHCP_GATEWAY VALUE="Y"/>
+    <DHCP_DNS_SERVER VALUE="Y"/>
+    <DHCP_WINS_SERVER VALUE="Y"/>
+    <DHCP_STATIC_ROUTE VALUE="Y"/>
+    <DHCP_DOMAIN_NAME VALUE="Y"/>
+    <DHCP_SNTP_SETTINGS VALUE="N"/>
+    <REG_WINS_SERVER VALUE="Y"/>
+    <REG_DDNS_SERVER VALUE="Y"/>
+    <PING_GATEWAY VALUE="Y"/>
+
+    <IP_ADDRESS VALUE="10.xx.xx.xx"/>
+    <SUBNET_MASK VALUE="255.255.xxx.0"/>
+    <GATEWAY_IP_ADDRESS VALUE="10.xx.xx.1"/>
+    <DNS_NAME VALUE="hostname-iLO"/>
+    <DOMAIN_NAME VALUE=""/>
+    <PRIM_DNS_SERVER VALUE="0.0.0.0"/>
+    <SEC_DNS_SERVER VALUE="0.0.0.0"/>
+    <TER_DNS_SERVER VALUE="0.0.0.0"/>
+    <PRIM_WINS_SERVER VALUE="0.0.0.0"/>
+    <SEC_WINS_SERVER VALUE="0.0.0.0"/>
+    <SNTP_SERVER1 VALUE=""/>
+    <SNTP_SERVER2 VALUE=""/>
+    <TIMEZONE VALUE="Atlantic/Reykjavik"/>
+    <STATIC_ROUTE_1 DEST="0.0.0.0" MASK="0.0.0.0" GATEWAY="0.0.0.0"/>
+    <STATIC_ROUTE_2 DEST="0.0.0.0" MASK="0.0.0.0" GATEWAY="0.0.0.0"/>
+    <STATIC_ROUTE_3 DEST="0.0.0.0" MASK="0.0.0.0" GATEWAY="0.0.0.0"/>
+
+    <IPV6_STATIC_ROUTE_1 IPV6_DEST="::" PREFIXLEN="0" IPV6_GATEWAY="::" ADDR_STATUS="INACTIVE"/>
+    <IPV6_STATIC_ROUTE_2 IPV6_DEST="::" PREFIXLEN="0" IPV6_GATEWAY="::" ADDR_STATUS="INACTIVE"/>
+    <IPV6_STATIC_ROUTE_3 IPV6_DEST="::" PREFIXLEN="0" IPV6_GATEWAY="::" ADDR_STATUS="INACTIVE"/>
+    <IPV6_PRIM_DNS_SERVER VALUE="::"/>
+    <IPV6_SEC_DNS_SERVER VALUE="::"/>
+    <IPV6_TER_DNS_SERVER VALUE="::"/>
+    <IPV6_DEFAULT_GATEWAY VALUE="::"/>
+    <IPV6_PREFERRED_PROTOCOL VALUE="Y"/>
+    <IPV6_ADDR_AUTOCFG VALUE="Y"/>
+    <IPV6_REG_DDNS_SERVER VALUE="Y"/>
+    <DHCPV6_STATELESS_ENABLE VALUE="Y"/>
+    <DHCPV6_STATEFUL_ENABLE VALUE="Y"/>
+    <DHCPV6_RAPID_COMMIT VALUE="N"/>
+    <DHCPV6_DOMAIN_NAME VALUE="Y"/>
+    <DHCPV6_SNTP_SETTINGS VALUE="N"/>
+    <DHCPV6_DNS_SERVER VALUE="Y"/>
+    <ILO_NIC_AUTO_SELECT VALUE="DISABLED"/>
+    <ILO_NIC_AUTO_SNP_SCAN VALUE="0"/>
+    <ILO_NIC_AUTO_DELAY VALUE="90"/>
+    <ILO_NIC_FAIL_OVER VALUE="DISABLED"/>
+    <ILO_NIC_FAIL_OVER_DELAY VALUE="300"/>
+    <SNP_PORT VALUE="1"/>
+</MOD_NETWORK_SETTINGS></RIB_INFO>
+</LOGIN>
+</RIBCL>
+```
+
+# 5. Apply the setting
+`hponcfg -f change_ilo_network.xml -l set.ilo.network.log`
