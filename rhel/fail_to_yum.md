@@ -19,11 +19,20 @@ Explanation:
      If you choose to open a support case in the Red Hat Customer Portal,
      please be sure to include details of what you were trying to do when
      this error occurred and specifics on how to reproduce this problem.
+     
+## Diagnostic Steps:
+
+Check to see if the client system has a file at /etc/sysconfig/rhn/systemid.
+Also check if enabled=1 is set in /etc/yum/pluginconf.d/rhnplugin.conf file on client machine.
 
 ## Solution:
+
 change the rhnplugin.conf from enable 1 to 0
 
 `vi /etc/yum/pluginconf.d/rhnplugin.conf`
 
 [main]
 enabled = 1  ->  0
+
+## Referance:
+https://access.redhat.com/solutions/2989151
