@@ -1,0 +1,26 @@
+#install-config.yaml
+
+apiVersion: v1
+baseDomain: kaho.local 
+compute:
+- hyperthreading: Disabled
+  name: worker
+  replicas: 0 
+controlPlane:
+  hyperthreading: Disabled   
+  name: master
+  replicas: 3
+metadata:
+  name: ocp4
+networking:
+  clusterNetwork:
+  - cidr: 10.128.0.0/14 
+    hostPrefix: 23 
+  networkType: OpenShiftSDN
+  serviceNetwork: 
+  - 172.30.0.0/16
+platform:
+  none: {} 
+fips: false 
+pullSecret: '{"auths":{"xxxxxxxxxxxxxxxx"}}}' 
+sshKey: 'ssh-rsa xxxxxxxxxxxxxxxx'
