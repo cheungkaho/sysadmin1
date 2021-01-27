@@ -1,0 +1,20 @@
+Please find steps to disabled FIPS on Host:
+
+- Login to RHV Manager GUI and put host in maintenance mode
+
+# grubby --update-kernel=ALL --remove-args=fips=1
+
+# [[ -f /etc/default/grub ]] && sed -i 's/ fips=1//' /etc/default/grub
+
+# init 6
+
+
+- Run following command to check whether FIPS is enabled or not
+
+# cat /proc/sys/crypto/fips_enabled
+
+~~
+Note: output 0 indicate FIPS disabled
+~~~
+
+- Make Host active from RHV Manager GUI
